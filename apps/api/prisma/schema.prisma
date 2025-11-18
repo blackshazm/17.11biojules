@@ -26,4 +26,48 @@ model User {
   // Self-referencing relation for referrals
   referrer   User?  @relation("UserReferrals", fields: [referrerId], references: [id])
   referees   User[] @relation("UserReferrals")
+
+  subscription Subscription?
+  commissions  Commission[]  @relation("BeneficiaryCommissions")
+  payments     Payment[]
+}
+
+model Subscription {
+  id        String   @id @default(uuid())
+  userId    String   @unique
+  user      User     @relation(fields: [userId], references: [id])
+  status    String // "Ativa", "Atrasada", "Cancelada"
+  startDate DateTime @default(now())
+  dueDate   DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  payments Payment[]
+}
+
+model Payment {
+  id             String   @id @default(uuid())
+  userId         String
+  user           User     @relation(fields: [userId], references: [id])
+  subscriptionId String
+  subscription   Subscription @relation(fields: [subscriptionId], references: [id])
+  amount         Float
+  paymentDate    DateTime @default(now())
+
+  commission   Commission?
+}
+
+model Commission {
+  id             String   @id @default(uuid())
+  beneficiaryId  String
+  beneficiary    User     @relation("BeneficiaryCommissions", fields: [beneficiaryId], references: [id])
+  payerId        String
+  paymentId      String   @unique
+  payment        Payment  @relation(fields: [paymentId], references: [id])
+  amount         Float
+  status         String // "Pendente", "Paga", "Cancelada"
+  generationDate DateTime @default(now())
+  releaseDate    DateTime
+
+  @@index([beneficiaryId])
 }
