@@ -1,0 +1,29 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../../../node_modules/.prisma/client"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id              String   @id @default(uuid())
+  name            String
+  email           String   @unique
+  cpf             String   @unique
+  passwordHash    String
+  referrerId      String?
+  commissionRate  Float
+  accountStatus   String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // Self-referencing relation for referrals
+  referrer   User?  @relation("UserReferrals", fields: [referrerId], references: [id])
+  referees   User[] @relation("UserReferrals")
+}

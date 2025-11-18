@@ -1,0 +1,16 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "baseUrl": "./src",
+    "declaration": true,
+    "paths": {
+      "core-users/*": ["../../packages/core-users/src/*"],
+      "core-subscriptions/*": ["../../packages/core-subscriptions/src/*"],
+      "core-payments/*": ["../../packages/core-payments/src/*"]
+    }
+  },
+  "include": ["src/index.ts"],
+  "exclude": ["node_modules", "dist", "src/**/__tests__"]
+}
